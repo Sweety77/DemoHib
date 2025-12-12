@@ -7,25 +7,15 @@ import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.cfg.Configuration;
 
-/**
- * Session is an Interface - so cannot create object. So we can use SessionFactory Interface.
- * Configuration - through configuration object, can call the buildSessionFactory() method.
- * open a session using sessionFactory object.
- */
+public class AppFetchData {
 
-
-
-public class App {
 
     private static SessionFactory sessionFactory;
 
+    Alien obj;
+
     public static void main(String[] args) {
-        Alien obj = new Alien();
-        obj.setAid(103);
-        obj.setAname("Sarang");
-        obj.setColor("While");
 
         try {
             StandardServiceRegistry registry =
@@ -46,14 +36,11 @@ public class App {
 
         Transaction tx = session.beginTransaction();
 
-        // Save/persist the data to the table
-        session.save(obj);
+// Fetch and print the well-formated data from the table - Need to give implementation to toString() method of the entity class
+
+        Alien alien = (Alien) session.get(Alien.class, 101);
+        System.out.println(alien);
 
         tx.commit();
-
-    }
-
-    public static SessionFactory getSessionFactory() {
-        return sessionFactory;
     }
 }

@@ -42,4 +42,15 @@ public class Alien {
         this.color = color;
     }
 
+    // Fetch and print the well-formated data from the data from the table - Need to give implementation to toString() method of the entity class
+
+
+    @Override
+    public String toString() {
+        return "Alien{" +
+                "aid=" + aid +
+                ", aname='" + aname + '\'' +
+                ", color='" + color + '\'' +
+                '}';
+    }
 }
