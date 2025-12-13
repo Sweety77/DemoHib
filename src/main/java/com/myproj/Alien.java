@@ -6,6 +6,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+/**
+ * Here AlienName is a class but not an Entity class - so mark the class as Embeddable to merge their colum with this table.
+ */
+
 @Entity
 @Table(name = "alien")
 public class Alien {
@@ -13,8 +17,8 @@ public class Alien {
     @Id
     @Column(name = "id")
     private int aid;
-    @Column(name = "name")
-    private String aname;
+//    @Column(name = "name")
+    private AlienName aname;
     @Column(name = "color")
     private String color;
 
@@ -22,7 +26,7 @@ public class Alien {
         return aid;
     }
 
-    public String getAname() {
+    public AlienName getAname() {
         return aname;
     }
 
@@ -34,7 +38,7 @@ public class Alien {
         this.aid = aid;
     }
 
-    public void setAname(String aname) {
+    public void setAname(AlienName aname) {
         this.aname = aname;
     }
 

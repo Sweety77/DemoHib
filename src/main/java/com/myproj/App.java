@@ -23,9 +23,13 @@ public class App {
 
     public static void main(String[] args) {
         Alien obj = new Alien();
-        obj.setAid(103);
-        obj.setAname("Sarang");
-        obj.setColor("While");
+        AlienName an = new AlienName();
+        an.setFname("Sweety");
+        an.setMname("");
+        an.setLname("Srivastava");
+        obj.setAid(110);
+        obj.setAname(an);
+        obj.setColor("green");
 
         try {
             StandardServiceRegistry registry =
