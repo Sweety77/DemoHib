@@ -7,7 +7,6 @@ import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.cfg.Configuration;
 
 /**
  * Session is an Interface - so cannot create object. So we can use SessionFactory Interface.
@@ -17,29 +16,19 @@ import org.hibernate.cfg.Configuration;
 
 
 
-public class App {
+public class App1 {
 
     private static SessionFactory sessionFactory;
 
     public static void main(String[] args) {
-
-
-        /**
-         * Embeddable Laptop for which table will not be created.
-         * Here will only save student and the columns for Laptop table will be created in the Student
-         * table.
-         */
-        Laptop_Emb laptopEmb = new Laptop_Emb();
-        laptopEmb.setLname("lenovo");
-        laptopEmb.setLid(123);
-
-
-
-        Student student = new Student();
-        student.setName("Sweety");
-        student.setRollno(1612);
-        student.setMarks(98);
-        student.setLaptopEmb(laptopEmb);
+        Alien obj = new Alien();
+        AlienName an = new AlienName();
+        an.setFname("Sweety");
+        an.setMname("");
+        an.setLname("Srivastava");
+        obj.setAid(110);
+        obj.setAname(an);
+        obj.setColor("green");
 
         try {
             StandardServiceRegistry registry =
@@ -61,10 +50,9 @@ public class App {
         Transaction tx = session.beginTransaction();
 
         // Save/persist the data to the table
-        session.save(student);
-//        session.save(laptopEmb);
+        session.save(obj);
 
-        tx.commit(); // or session.getTransaction().commit();
+        tx.commit();
 
     }
 
