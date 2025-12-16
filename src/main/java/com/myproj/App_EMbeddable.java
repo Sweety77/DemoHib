@@ -7,7 +7,6 @@ import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.cfg.Configuration;
 
 /**
  * Session is an Interface - so cannot create object. So we can use SessionFactory Interface.
@@ -17,7 +16,7 @@ import org.hibernate.cfg.Configuration;
 
 
 
-public class App {
+public class App_EMbeddable {
 
     private static SessionFactory sessionFactory;
 
