@@ -22,7 +22,7 @@ public class App {
         student.setName("Sweety");
         student.setRollno(1612);
         student.setMarks(98);
-        student.setLaptop(laptop);
+        student.getLaptop().add(laptop);
 
         try {
             StandardServiceRegistry registry =
