@@ -1,0 +1,22 @@
+The @OneToMany, @ManyToOne or @ManyToOne is responsible to create an extra relationship table.
+If we want to avoid creation of separate rel table we can use annotation followed by the attribute (mappedBy = "variable name used in other mapping class")
+
+---------------------------------------------
+
+Laptop Class-
+@ManyToOne
+    private Student student;
+
+
+ Student Class-
+
+@OneToMany(mappedBy = "student")  // mappedBy attribute will stop the annotaion to create and extra table student_laptop to maintain the relationship.
+    private List<Laptop>  laptop = new ArrayList<>();
+
+ManyToMany annotation maintains two extra table so to avoid that follow same mappedBy attribute with the Annotation.
+student_laptop table and laptop_student table.
+
+One table if enough to know about rel so we can avoid creating extra table.
+
+@ManyToMany(mappedBy = "student")
+    private List<Laptop> laptop = new ArrayList<>();

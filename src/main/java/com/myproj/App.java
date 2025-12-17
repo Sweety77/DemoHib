@@ -24,7 +24,8 @@ public class App {
         student.setMarks(98);
         student.getLaptop().add(laptop);
 
-        laptop.setStudent(student);
+//        laptop.setStudent(student);
+        laptop.getStudent().add(student);
 
         try {
             StandardServiceRegistry registry =

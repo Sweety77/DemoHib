@@ -2,7 +2,11 @@ package com.myproj;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * In case of one Student Many laptops (OneToMany rel), where student class laptop is annotated with
@@ -35,8 +39,11 @@ public class Laptop {
     @Id
     private int lid;
     private String lname;
-    @ManyToOne
-    private Student student;
+   /* @ManyToOne
+    private Student student;*/
+
+    @ManyToMany
+    private List<Student> student = new ArrayList<>();
 
     public int getLid() {
         return lid;
@@ -54,11 +61,19 @@ public class Laptop {
         this.lname = lname;
     }
 
-    public Student getStudent() {
+    public List<Student> getStudent() {
+        return student;
+    }
+
+    public void setStudent(List<Student> student) {
+        this.student = student;
+    }
+
+    /*public Student getStudent() {
         return student;
     }
 
     public void setStudent(Student student) {
         this.student = student;
-    }
+    }*/
 }

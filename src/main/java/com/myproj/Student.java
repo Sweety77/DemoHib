@@ -1,9 +1,6 @@
 package com.myproj;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +15,10 @@ public class Student {
     /*@OneToOne
     private Laptop  laptop;*/
 
-    @OneToMany(mappedBy = "student")  // mappedBy attribute will stop the annotaion to create and extra table student_laptop to maintain the relationship.
-    private List<Laptop>  laptop = new ArrayList<>();
+    /*@OneToMany(mappedBy = "student")  // mappedBy attribute will stop the annotaion to create and extra table student_laptop to maintain the relationship.
+    private List<Laptop>  laptop = new ArrayList<>();*/
+    @ManyToMany(mappedBy = "student")
+    private List<Laptop> laptop = new ArrayList<>();
 
     public int getRollno() {
         return rollno;
