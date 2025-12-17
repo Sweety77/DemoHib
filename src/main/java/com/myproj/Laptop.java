@@ -1,13 +1,12 @@
 package com.myproj;
 
-import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
-@Embeddable
+@Entity
 public class Laptop {
 
-//    @Id
+    @Id
     private int lid;
     private String lname;
 

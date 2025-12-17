@@ -2,6 +2,7 @@ package com.myproj;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class Student {
@@ -10,7 +11,8 @@ public class Student {
     private int rollno;
     private String name;
     private int marks;
-    private Laptop_Emb  laptopEmb;
+    @OneToOne
+    private Laptop  laptop;
 
     public int getRollno() {
         return rollno;
@@ -36,11 +38,11 @@ public class Student {
         this.marks = marks;
     }
 
-    public Laptop_Emb getLaptopEmb() {
-        return laptopEmb;
+    public Laptop getLaptop() {
+        return laptop;
     }
 
-    public void setLaptopEmb(Laptop_Emb laptopEmb) {
-        this.laptopEmb = laptopEmb;
+    public void setLaptop(Laptop laptop) {
+        this.laptop = laptop;
     }
 }
