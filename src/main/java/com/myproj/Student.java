@@ -18,7 +18,7 @@ public class Student {
     /*@OneToOne
     private Laptop  laptop;*/
 
-    @OneToMany
+    @OneToMany(mappedBy = "student")  // mappedBy attribute will stop the annotaion to create and extra table student_laptop to maintain the relationship.
     private List<Laptop>  laptop = new ArrayList<>();
 
     public int getRollno() {

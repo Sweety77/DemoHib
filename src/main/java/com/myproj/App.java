@@ -24,6 +24,8 @@ public class App {
         student.setMarks(98);
         student.getLaptop().add(laptop);
 
+        laptop.setStudent(student);
+
         try {
             StandardServiceRegistry registry =
                     new StandardServiceRegistryBuilder()
