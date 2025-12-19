@@ -1,0 +1,406 @@
+1. Why Hibernate Caching Exists
+
+Database calls are slow compared to memory access.
+Hibernate caching reduces unnecessary DB hits by storing data in memory.
+
+Goal: Improve performance, scalability, and response time
+
+| Cache Type             | Scope          | Default    | Shared |
+| ---------------------- | -------------- | ---------- | ------ |
+| **First-Level Cache**  | Session        | ✅ Enabled  | ❌ No   |
+| **Second-Level Cache** | SessionFactory | ❌ Disabled | ✅ Yes  |
+| **Query Cache**        | SessionFactory | ❌ Disabled | ✅ Yes  |
+
+
+3. First-Level Cache (Session Cache)
+3.1 What is First-Level Cache?
+
+Automatically enabled
+
+One cache per Hibernate Session
+
+Stores entities by primary key
+
+3.2 How It Works
+Session session = sessionFactory.openSession();
+
+Employee e1 = session.get(Employee.class, 1L);
+Employee e2 = session.get(Employee.class, 1L);
+
+SQL Executed
+SELECT * FROM employee WHERE id = 1;
+
+
+✔ Only ONE DB call
+✔ Second fetch comes from session cache
+
+3.3 Key Properties
+
+- Cannot be disabled
+
+- Cleared when:
+
+    -session closes
+
+    -session.clear()
+
+    -session.evict(entity)
+
+
+
+4. Second-Level Cache (SessionFactory Cache)
+4.1 What is Second-Level Cache?
+
+Shared across sessions
+
+Stores entities beyond session lifecycle
+
+Requires external cache provider
+
+Examples:
+
+Ehcache
+
+Caffeine
+
+Hazelcast
+
+Redis
+
+4.2 Flow of Second-Level Cache
+
+Check First-Level Cache
+
+If miss → Check Second-Level Cache
+
+If miss → DB call
+
+Store result in both caches
+
+4.3 Configuration (Spring Boot Example)
+Dependency
+<dependency>
+  <groupId>org.hibernate.orm</groupId>
+  <artifactId>hibernate-jcache</artifactId>
+</dependency>
+
+application.yml
+spring:
+  jpa:
+    properties:
+      hibernate:
+        cache:
+          use_second_level_cache: true
+          region.factory_class: jcache
+
+4.4 Enable Cache on Entity
+@Entity
+@Cacheable
+@org.hibernate.annotations.Cache(
+    usage = CacheConcurrencyStrategy.READ_WRITE
+)
+public class Product {
+    @Id
+    private Long id;
+}
+
+4.5 Cache Concurrency Strategies (Very Important)
+Strategy	Use Case
+READ_ONLY	Reference data
+READ_WRITE	Frequently updated
+NONSTRICT_READ_WRITE	Low consistency
+TRANSACTIONAL	JTA environments
+Example
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+
+4.6 When Second-Level Cache Is Useful
+
+✔ Read-heavy data
+✔ Reference/master tables
+✔ Low update frequency
+
+Examples:
+
+Country
+
+Currency
+
+Roles
+
+Configuration tables
+
+4.7 When NOT to Use It
+
+❌ High-write tables
+❌ Frequently changing transactional data
+❌ Large datasets
+
+
+5. Query Cache
+5.1 What is Query Cache?
+
+- Caches query results (IDs)
+- Works with Second-Level Cache
+- Stores result list, not entities
+
+5.2 How It Works
+Query query = session.createQuery("FROM Product");
+query.setCacheable(true);
+
+✔ Query result IDs cached
+✔ Entities fetched from 2nd level cache
+
+
+5.3 Enable Query Cache
+hibernate:
+  cache:
+    use_query_cache: true
+
+5.4 Important Limitation
+
+❗ Query cache is invalidated when underlying data changes.
+
+6. Cache vs Fetch Join vs DTO (Comparison)
+
+| Feature          | Cache      | Fetch Join | DTO            |
+| ---------------- | ---------- | ---------- | -------------- |
+| DB hit avoided   | Yes        | No         | Partial        |
+| Network payload  | Large      | Large      | Minimal        |
+| Best for         | Reuse data | Avoid N+1  | APIs           |
+| Write operations | Risky      | Safe       | Not applicable |
+
+
+(Short & Strong)
+
+Hibernate provides three caching levels. The first-level cache is session-scoped and enabled by default,
+ensuring object identity and reducing duplicate DB calls. The second-level cache is session-factory scoped
+and shared across sessions, requiring an external cache provider and is best suited for read-heavy, rarely
+changing data. The query cache stores query result identifiers and works alongside the second-level cache.
+Proper use of caching improves performance but must be applied selectively to avoid stale data and memory issues.
+
+
+--------------------------==========================================-------------------------------------------------
+
+BASIC INTERVIEW QUESTIONS
+1. What is caching in Hibernate?
+
+Answer:
+Caching in Hibernate is a mechanism to store frequently accessed data in memory to reduce database calls and improve application performance.
+
+2. How many levels of cache does Hibernate have?
+
+Answer:
+Hibernate has three levels of caching:
+
+First-Level Cache (Session)
+
+Second-Level Cache (SessionFactory)
+
+Query Cache
+
+3. What is First-Level Cache?
+
+Answer:
+First-level cache is a mandatory, session-scoped cache enabled by default.
+It ensures that repeated access to the same entity within a session does not hit the database again.
+
+4. Can First-Level Cache be disabled?
+
+Answer:
+No. First-level cache cannot be disabled as it is integral to Hibernate session management.
+
+5. What is Second-Level Cache?
+
+Answer:
+Second-level cache is an optional, shared cache that stores entity data across sessions and requires an external cache provider like Ehcache or Caffeine.
+
+6. Is Second-Level Cache enabled by default?
+
+Answer:
+No. It must be explicitly configured and enabled.
+
+| Aspect            | First-Level | Second-Level   |
+| ----------------- | ----------- | -------------- |
+| Scope             | Session     | SessionFactory |
+| Default           | Enabled     | Disabled       |
+| Shared            | No          | Yes            |
+| External Provider | No          | Yes            |
+
+
+
+8. What is Query Cache?
+
+Answer:
+Query cache stores query result identifiers, not entity data.
+It works together with the second-level cache to avoid executing the same query repeatedly.
+
+9. Does Query Cache store entity objects?
+
+Answer:
+No. It stores only entity IDs, and entities are fetched from the second-level cache.
+
+10. How do you enable Second-Level Cache?
+
+Answer:
+By:
+
+Enabling cache properties in Hibernate
+
+Adding cache provider dependency
+
+Annotating entities with @Cacheable
+
+11. What are Cache Concurrency Strategies?
+
+Answer:
+They define how Hibernate handles concurrent access to cached data.
+
+Common strategies:
+
+READ_ONLY
+
+READ_WRITE
+
+NONSTRICT_READ_WRITE
+
+TRANSACTIONAL
+
+12. When should READ_ONLY cache be used?
+
+Answer:
+For static or reference data that never changes, such as country codes or currencies.
+
+🔹 ADVANCED INTERVIEW QUESTIONS
+13. Does caching solve the N+1 problem?
+
+Answer:
+No. Caching reduces DB hits but does not prevent N+1 queries.
+Fetch Join or Entity Graphs should be used instead.
+
+14. What happens when an entity is updated?
+
+Answer:
+Hibernate invalidates or updates the cache entry depending on the cache strategy.
+
+15. Can we cache collections?
+
+Answer:
+Yes, but carefully.
+Caching large or frequently changing collections can cause memory and consistency issues.
+
+16. Difference between Hibernate Cache and Redis Cache?
+
+Answer:
+Hibernate cache is ORM-level and entity-aware.
+Redis is application-level, technology-agnostic, and suitable for distributed caching.
+
+17. What is cache eviction?
+
+Answer:
+Eviction is the process of removing stale data from cache manually or automatically.
+
+Example:
+
+session.evict(entity);
+
+18. What happens if DB is updated outside Hibernate?
+
+Answer:
+Cache becomes stale, because Hibernate does not know about external updates.
+
+19. Can we cache native SQL queries?
+
+Answer:
+No. Query cache works only with HQL/JPQL, not native SQL.
+
+20. Is Second-Level Cache transactional?
+
+Answer:
+Only when using TRANSACTIONAL strategy with JTA-based cache providers.
+
+🔹 SCENARIO-BASED QUESTIONS (MOST IMPORTANT)
+21. When should you avoid Second-Level Cache?
+
+Answer:
+Avoid it for:
+
+High-write tables
+
+Frequently changing data
+
+Large transactional datasets
+
+22. How would you cache a Country master table?
+
+Answer:
+
+Enable second-level cache
+
+Use READ_ONLY strategy
+
+Load once, reuse across sessions
+
+23. Hibernate cache vs DTO projection – which is better?
+
+Answer:
+DTO projection is better for REST APIs as it avoids entity loading and lazy issues.
+Hibernate cache is better for business logic reuse.
+
+24. How do you verify if caching is working?
+
+Answer:
+
+Enable SQL logging
+
+Observe reduced DB calls
+
+Check cache statistics
+
+25. Real-world usage of Hibernate cache?
+
+Answer:
+Used for reference data like:
+
+Roles
+
+Configuration
+
+Lookup tables
+
+Not used for transactional data.
+
+🔹 TRICK / CONFUSION QUESTIONS
+26. Is @Cacheable enough to enable caching?
+
+Answer:
+No. You must also enable cache at Hibernate configuration level and add a provider.
+
+27. Will Fetch Join use cache?
+
+Answer:
+No. Fetch Join always hits DB; cache is not used.
+
+28. Is caching enabled automatically in Spring Boot?
+
+Answer:
+First-level cache is automatic.
+Second-level and query cache are not enabled automatically.
+
+🔹 ONE-LINE POWER ANSWERS (MEMORIZE)
+
+First-level cache → mandatory, session-scoped
+
+Second-level cache → optional, shared, entity-based
+
+Query cache → stores query IDs, not entities
+
+Cache ≠ Fetch Join
+
+Cache ≠ DTO
+
+Use cache for read-heavy reference data only
+
+
+--------------
+Conversation Link- https://chatgpt.com/c/69433f8a-afe0-832b-ba58-ad5749f71f86
+
