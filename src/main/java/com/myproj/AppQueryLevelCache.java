@@ -7,36 +7,13 @@ import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.query.Query;
 
-public class AppCache {
+public class AppQueryLevelCache {
 
     private static SessionFactory sessionFactory;
 
     public static void main(String[] args) {
-
-        /*Alien alien2 = new Alien();
-        alien2.setAid(101);
-        alien2.setColor("green");
-
-        AlienName an = new AlienName();
-        an.setFname("Rombo");
-        an.setMname("shombo");
-        an.setLname("Lano");
-
-        alien2.setAname(an);
-
-        Alien alien3 = new Alien();
-        alien2.setAid(101);
-        alien2.setColor("green");
-
-        AlienName an = new AlienName();
-        an.setFname("tingu");
-        an.setMname("sannu");
-        an.setLname("munnu");
-
-        alien3.setAname(an);*/
-
-
 
         try {
             StandardServiceRegistry registry =
@@ -56,15 +33,11 @@ public class AppCache {
         Session session = sessionFactory.openSession();
         Transaction tx = session.beginTransaction();
 
-       /* session.save(alien2);
-        session.save(alien3);
+        // create query
+        Query q1 = session.createQuery("from alien where aid = 101");
+        q1.setCacheable(true);
 
-        session.getTransaction().commit();
-*/
-        /**
-         * Here, application hit select query to db.
-         */
-        Alien alien = session.get(Alien.class,101);
+        Alien alien = (Alien) q1.uniqueResult();
         System.out.println(alien);
         session.close();
 
@@ -75,8 +48,16 @@ public class AppCache {
         Session session1 = sessionFactory.openSession();
         Transaction tx1 = session1.beginTransaction();
 
-        Alien alien1 = session1.get(Alien.class, 101);
+
+        Query q2 = session1.createQuery("from alien where aid = 101");
+        q2.setCacheable(true);
+
+        Alien alien1 = (Alien)q2.uniqueResult();
         System.out.println(alien1);
+        session1.close();
+
+        // In this way it hits query one time only.
+
 
     }
 

@@ -22,6 +22,18 @@
         <property name="hibernate.show_sql">true</property>
         <property name="hibernate.format_sql">true</property>
 
+        <!-- Enable second-level cache -->
+        <property name="hibernate.cache.use_second_level_cache">true</property>
+
+        <!-- Hibernate 6: use JCache integration -->
+        <property name="hibernate.cache.region.factory_class">jcache</property>
+
+        <!-- Tell Hibernate which JCache provider to use (Ehcache JSR-107 provider) -->
+        <property name="hibernate.javax.cache.provider">org.ehcache.jsr107.EhcacheCachingProvider</property>
+
+        <!-- Ehcache config file from classpath (src/main/resources) -->
+<!--        <property name="hibernate.javax.cache.uri">ehcache.xml</property>-->
+
         <!-- Entity mappings -->
 
         <mapping class="com.myproj.Alien"/>

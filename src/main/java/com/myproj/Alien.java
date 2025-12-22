@@ -1,10 +1,8 @@
 package com.myproj;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  * Here AlienName is a class but not an Entity class - so mark the class as Embeddable to merge their colum with this table.
@@ -12,6 +10,8 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "alien")
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 public class Alien {
 
     @Id

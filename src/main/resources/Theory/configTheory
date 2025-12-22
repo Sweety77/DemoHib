@@ -1,0 +1,55 @@
+<property name="hibernate.javax.cache.uri">ehcache.xml</property>
+actually mean?
+
+It tells Hibernate where to find the JCache provider’s configuration file.
+
+Longer, correct explanation
+
+Hibernate itself does NOT understand Ehcache XML.
+
+Instead:
+
+    Hibernate talks to JCache (JSR-107)
+    JCache talks to Ehcache
+    Ehcache reads ehcache.xml
+
+
+This property is the bridge that says:
+
+“Hey Hibernate, when you initialize JCache, pass this URI to the cache provider.”
+<property name="hibernate.javax.cache.uri">ehcache.xml</property>
+
+Means:
+
+    -Load ehcache.xml
+    -From the classpath
+    -Typically located in src/main/resources/ehcache.xml
+
+
+Internally
+
+Hibernate does something like:
+    CachingProvider provider = Caching.getCachingProvider();
+    URI uri = URI.create("ehcache.xml");
+    CacheManager cacheManager = provider.getCacheManager(uri, classLoader);
+
+
+    So:
+    ❌ Hibernate doesn’t parse the XML
+    ✅ Ehcache does
+
+
+Why does the property still say javax in Jakarta?
+hibernate.javax.cache.*
+
+Why this is still correct in Hibernate 6
+    JCache spec name is still javax.cache
+    Jakarta did NOT rename JCache
+    Only JPA / JAXB / Transactions moved to jakarta.*
+
+
+🔹 hibernate.cache.use_second_level_cache
+
+<property name="hibernate.cache.use_second_level_cache">true</property>
+
+
