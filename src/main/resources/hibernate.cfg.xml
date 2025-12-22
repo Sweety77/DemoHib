@@ -36,7 +36,8 @@
 
         <!-- Entity mappings -->
 
-        <mapping class="com.myproj.Alien"/>
+<!--        <mapping class="com.myproj.Alien"/>-->
+        <mapping class="com.myproj.StudentHQL"/>
         <!--<mapping class="com.myproj.Student"/>
         <mapping class="com.myproj.Laptop"/>-->
 
